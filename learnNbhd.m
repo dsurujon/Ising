@@ -5,7 +5,7 @@
 % [output] S: neighborhood of u
 
 function S = learnNbhd(u,X,t)
-
+    disp(u);
     maxi=1;
     keepadding=1;
     
@@ -18,17 +18,17 @@ function S = learnNbhd(u,X,t)
         possible_neighbors=setdiff(V,union(Sa,u));
         maxinfl=0;
         for i=possible_neighbors
-            infl=influence(u,i,Sa,X);
-            if infl>=maxinfl
+            infl=avg_infl(X,u,i,Sa);
+            if infl>maxinfl
                 maxinfl=infl;
                 maxi=i;
             end
         end
-        %disp(Sa);
+        disp(Sa);
         if maxinfl>=t
             Sa=union(Sa,maxi);
-        elseif isequal(Sa,setdiff(V,u))==1
-            keepadding=0;
+        %elseif isequal(Sa,setdiff(V,u))==1
+        %    keepadding=0;
         else
             keepadding=0;
         end
@@ -36,10 +36,11 @@ function S = learnNbhd(u,X,t)
     end
     %prune S
     for i2=Sa
-        infl2=influence(u,i2,setdiff(Sa,i2),X);
+        infl2=avg_infl(X,u,i2,setdiff(Sa,i2));
+        disp(infl2);
         if infl2<t
             Sa=setdiff(Sa,i2);
-            %disp(Sa);
+            disp(Sa);
         end
     end
     S=Sa;
